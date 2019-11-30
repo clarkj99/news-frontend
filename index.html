@@ -10,16 +10,40 @@
     />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css"
+      href="https://unpkg.com/bulmaswatch/slate/bulmaswatch.min.css"
     />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="styles.css" />
     <script
       defer
       src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
     ></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="index.js"></script>
     <title>Document</title>
   </head>
-  <body>
+  <body class="has-navbar-fixed-top">
+    <!-- *** Nav *** -->
+
+    <nav class="navbar has-text-centered is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-item">Newsoto Photos</a>
+      </div>
+      <div
+        class="navbar-menu is-active"
+        id="categories"
+        class="has-text-centered"
+      ></div>
+    </nav>
+
+    <section class="section">
+      <div class="container" id="main">
+        <!-- *** Images *** -->
+        <div class="has-text-centered" id="images"></div>
+      </div>
+    </section>
+
+    <!-- *** Modal *** -->
     <div id="modal" class="modal">
       <div class="modal-background"></div>
       <div class="modal-card">
@@ -32,18 +56,13 @@
 
         <section class="modal-card-body">
           <img id="modal-image" />
-          <p><span id="modal-source"></span></p>
-          <p id="modal-description"></p>
+          <p>
+            <p id="modal-description"></p>
+            <span id="modal-category"></span> <span id="modal-source"></span>
+            <span id="modal-date"></span>
+          </p>
         </section>
       </div>
     </div>
-    <section class="section">
-      <div class="container" id="main">
-        <div class="content has-text-centered">
-          <h1>Newsoto Photos</h1>
-        </div>
-        <div class="has-text-centered box" id="images"></div>
-      </div>
-    </section>
   </body>
 </html>

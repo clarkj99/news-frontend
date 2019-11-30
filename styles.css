@@ -1,0 +1,11 @@
+.section {
+  background-image: linear-gradient(
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.9),
+      rgba(0, 0, 0, 0.6)
+    ),
+    url("164201738-data-wallpapers.jpg");
+  background-repeat: no-repeat;
+  background-image: cross-fade();
+  background-attachment: fixed;
+}
