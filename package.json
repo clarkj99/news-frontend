@@ -1,0 +1,18 @@
+{
+  "name": "news-proj",
+  "version": "1.0.0",
+  "description": "Javascript DOM manipulation with RAILS API onky",
+  "main": "index.html",
+  "dependencies": {
+    "liteserver": "^0.3.0"
+  },
+  "devDependencies": {
+    "light-server": "^2.6.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "lite-server -b 10.0.0.225"
+  },
+  "author": "Clark Johnson",
+  "license": "ISC"
+}

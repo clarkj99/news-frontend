@@ -1,56 +1,37 @@
-baseURL = 'http://localhost:3000/articles/'
-categoriesURL = 'http://localhost:3000/categories/'
+baseURL = 'http://10.0.0.225:3000/articles/'
+categoriesURL = 'http://10.0.0.225:3000/categories/'
 window.addEventListener('DOMContentLoaded', function (e) {
 
-    const modal = document.querySelector('#modal');
-    const modalClose = document.querySelector('#modal-close');
-    const modalBack = document.querySelector('.modal-background');
-
-    const modalTitle = document.querySelector('#modal-title');
-    const modalImage = document.querySelector('#modal-image');
-    const modalDescription = document.querySelector('#modal-description');
-    const modalSource = document.querySelector('#modal-source');
-    const modalCategory = document.querySelector('#modal-category');
-    const modalDate = document.querySelector('#modal-date');
-    const photosDiv = document.querySelector('#images');
-    const navbarDiv = document.querySelector('#categories');
-
-    const thumbWidth = 227;
-    const thumbHeight = 128;
-
     AOS.init(); //Appear on Scroll
-
     addListeners();
-
     fetchCategories();
-
     fetchArticles();
 
     function addListeners() {
-        [modalClose, modalBack].forEach((element) => {
+        const modal = document.querySelector('#modal');
+        const modalClose = document.querySelector('#modal-close');
+        const modalBack = document.querySelector('.modal-background');
+        const brand = document.querySelector('#brand');
+        brand.addEventListener('click', function (e) {
+            fetchArticles()
+        });
+
+        [modalClose, modalBack].forEach(function (element) {
             element.addEventListener('click', function (e) {
                 document.documentElement.classList.remove('is-clipped');
                 modal.classList.remove('is-active');
             });
         })
+    }
 
-        photosDiv.addEventListener('click', function (e) {
-            if (e.target.className == 'article-image') {
-                fetch(`${baseURL}${e.target.dataset.articleId}`)
-                    .then(res => res.json())
-                    .then(article => {
-                        if (!article.url_to_image)
-                            article.url_to_image = 'undefined.jpg';
-                        updateModal(article);
-                    })
-            }
-        })
-
-        navbarDiv.addEventListener('click', function (e) {
-            if (e.target.className.includes('category-button')) {
-                fetchCategory(e.target.dataset.categoryId)
-            }
-        })
+    function fetchArticle(articleId) {
+        fetch(`${baseURL}${articleId}`)
+            .then(res => res.json())
+            .then(article => {
+                if (!article.url_to_image)
+                    article.url_to_image = 'undefined.jpg';
+                updateModal(article);
+            })
     }
 
     function fetchCategories() {
@@ -60,16 +41,23 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function showNavbar(categories) {
+        const navbarDiv = document.querySelector('#categories');
         for (const category of categories) {
             navbarDiv.appendChild(makeCategoryButton(category));
         }
+
+        navbarDiv.addEventListener('click', function (e) {
+            if (e.target.className.includes('category-button')) {
+                fetchCategory(e.target.dataset.categoryId)
+            }
+        })
     }
 
     function fetchCategory(categoryId) {
         fetch(`${categoriesURL}${categoryId}`)
             .then(res => res.json())
             .then(category => {
-                showArticles
+                showArticles(category.articles);
             })
     }
 
@@ -88,13 +76,27 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function showArticles(articles) {
-        const div = document.querySelector('#images');
+        const photosDiv = document.querySelector('#images');
+        // const div = document.querySelector('#images');
+        const div = document.createElement('div');
+        div.className = "has-text-centered";
+        div.id = "images";
+
         for (const article of articles) {
             div.appendChild(makeACard(article));
         }
+        div.addEventListener('click', function (e) {
+            if (e.target.className == 'article-image') {
+                fetchArticle(e.target.dataset.articleId)
+            }
+        })
+        photosDiv.parentNode.replaceChild(div, photosDiv);
     }
 
     function makeACard(article) {
+        const thumbWidth = 160;
+        const thumbHeight = 90;
+
         if (!article.url_to_image)
             article.url_to_image = 'undefined.jpg';
 
@@ -103,7 +105,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
         divCard.setAttribute("data-aos", "zoom-in")
         divCard.setAttribute("data-aos-mirror", "true")
-        divCard.setAttribute("data-aos-offset", (thumbHeight * 2).toString())
+        divCard.setAttribute("data-aos-offset", (thumbHeight * .5).toString())
 
         const divImage = document.createElement('div');
         divImage.className = "card-image";
@@ -115,10 +117,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const a = document.createElement('a');
         a.className = "modal-button";
 
-        // a.addEventListener('click', function (e) {
-        //     console.log('clicked');
-        //     updateModal(article);
-        // });
         img = document.createElement('img');
         img.setAttribute("data-article-id", article.id)
         img.className = "article-image"
@@ -126,8 +124,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
         img.setAttribute("style", `object-fit: cover; width: ${thumbWidth}px; height: ${thumbHeight}px; `)
         img.src = article.url_to_image;
         a.appendChild(img);
-
-
 
         figure.appendChild(a);
         divImage.appendChild(figure);
@@ -137,6 +133,14 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function updateModal(article) {
+        const modalTitle = document.querySelector('#modal-title');
+        const modalImage = document.querySelector('#modal-image');
+        const modalDescription = document.querySelector('#modal-description');
+        const modalSource = document.querySelector('#modal-source');
+        const modalCategory = document.querySelector('#modal-category');
+        const modalDate = document.querySelector('#modal-date');
+
+
         modalImage.src = article.url_to_image;
         modalDescription.innerText = article.description;
         modalSource.innerText = article.source_name;
