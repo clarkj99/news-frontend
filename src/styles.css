@@ -6,11 +6,12 @@
 
 html {
   font-family: "Fira Sans Extra Condensed", sans-serif;
-  font-size: 1.2em;
+  /* font-size: 1.2em; */
   background-image: url("../img/dark-blur-blurred-gradient-1526.jpg");
   background-repeat: no-repeat;
   background-image: cross-fade();
   background-attachment: fixed;
+  overflow-x: hidden;
 }
 .title {
   font-family: "Special Elite", serif;
@@ -22,4 +23,8 @@ html {
 
 .modal-card {
   box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.5), 0 18px 60px 0 rgba(0, 0, 0, 0.3);
+}
+
+#main {
+  height: 80%;
 }

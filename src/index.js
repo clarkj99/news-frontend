@@ -1,12 +1,15 @@
-baseURL = 'http://10.0.0.225:3000/articles/'
-categoriesURL = 'http://10.0.0.225:3000/categories/'
+baseURL = 'http://localhost:3000/articles/'
+categoriesURL = 'http://localhost:3000/categories/'
 window.addEventListener('DOMContentLoaded', function (e) {
     const pageHeading = document.querySelector('#heading');
+    const animaStyle = {
+        in: 'zoomIn', out: 'zoomOut'
+    }
 
     AOS.init({
 
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-        offset: 120, // offset (in px) from the original trigger point
+        offset: 180, // offset (in px) from the original trigger point
         delay: 0, // values from 0 to 3000, with step 50ms
         duration: 400, // values from 0 to 3000, with step 50ms
         easing: 'ease', // default easing for AOS animations
@@ -20,6 +23,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
     fetchArticles();
 
     function addListeners() {
+
         const modal = document.querySelector('#modal');
         const modalClose = document.querySelector('#modal-close');
         const modalBack = document.querySelector('.modal-background');
@@ -30,9 +34,12 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
         [modalClose, modalBack].forEach(function (element) {
             element.addEventListener('click', function (e) {
-                document.documentElement.classList.remove('is-clipped');
-                modal.classList.remove('is-active');
-                AOS.refresh();
+                animateCSS('.modal-card', animaStyle['out'], () => {
+                    const modal = document.querySelector('#modal');
+                    document.documentElement.classList.remove('is-clipped');
+                    modal.classList.remove('is-active');
+                });
+
             });
         })
     }
@@ -166,7 +173,20 @@ window.addEventListener('DOMContentLoaded', function (e) {
         modalTitle.href = article.url;
         document.documentElement.classList.add('is-clipped');
         modal.classList.add('is-active');
-        AOS.refresh();
+        animateCSS('.modal-card', animaStyle['in']);
     }
 
+    function animateCSS(element, animationName, callback) {
+        const node = document.querySelector(element)
+        node.classList.add('animated', animationName)
+
+        function handleAnimationEnd() {
+            node.classList.remove('animated', animationName)
+            node.removeEventListener('animationend', handleAnimationEnd)
+
+            if (typeof callback === 'function') callback()
+        }
+
+        node.addEventListener('animationend', handleAnimationEnd)
+    }
 });
