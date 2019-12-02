@@ -3,7 +3,18 @@ categoriesURL = 'http://10.0.0.225:3000/categories/'
 window.addEventListener('DOMContentLoaded', function (e) {
     const pageHeading = document.querySelector('#heading');
 
-    AOS.init(); //Appear on Scroll
+    AOS.init({
+
+        // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
+        offset: 120, // offset (in px) from the original trigger point
+        delay: 0, // values from 0 to 3000, with step 50ms
+        duration: 400, // values from 0 to 3000, with step 50ms
+        easing: 'ease', // default easing for AOS animations
+        once: false, // whether animation should happen only once - while scrolling down
+        mirror: true, // whether elements should animate out while scrolling past them
+        anchorPlacement: 'top-bottom', // defines which position of the element regarding to window should trigger the animation
+
+    }); //Appear on Scroll
     addListeners();
     fetchCategories();
     fetchArticles();
@@ -21,6 +32,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
             element.addEventListener('click', function (e) {
                 document.documentElement.classList.remove('is-clipped');
                 modal.classList.remove('is-active');
+                AOS.refresh();
             });
         })
     }
@@ -30,7 +42,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
             .then(res => res.json())
             .then(article => {
                 if (!article.url_to_image)
-                    article.url_to_image = '/img/undefined.jpg';
+                    article.url_to_image = 'img/undefined.jpg';
                 updateModal(article);
             })
     }
@@ -86,6 +98,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const div = document.createElement('div');
         div.className = "has-text-centered";
         div.id = "images";
+        photosDiv.parentNode.replaceChild(div, photosDiv);
 
         for (const article of articles) {
             div.appendChild(makeACard(article));
@@ -95,7 +108,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
                 fetchArticle(e.target.dataset.articleId)
             }
         })
-        photosDiv.parentNode.replaceChild(div, photosDiv);
     }
 
     function makeACard(article) {
@@ -103,13 +115,13 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const thumbHeight = 90;
 
         if (!article.url_to_image)
-            article.url_to_image = '/img/undefined.jpg';
+            article.url_to_image = 'img/undefined.jpg';
 
         const divCard = document.createElement('div');
         divCard.className = "card is-inline-flex";
-        divCard.setAttribute("data-aos", "zoom-in")
-        divCard.setAttribute("data-aos-mirror", "true")
-        divCard.setAttribute("data-aos-offset", (thumbHeight * .5).toString())
+        divCard.setAttribute("data-aos", "zoom-in-up")
+        // divCard.setAttribute("data-aos-mirror", "true")
+        // divCard.setAttribute("data-aos-offset", (thumbHeight * .5).toString())
 
         const divImage = document.createElement('div');
         divImage.className = "card-image";
@@ -154,6 +166,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         modalTitle.href = article.url;
         document.documentElement.classList.add('is-clipped');
         modal.classList.add('is-active');
+        AOS.refresh();
     }
 
 });

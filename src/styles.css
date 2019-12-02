@@ -1,16 +1,25 @@
 @import url("https://fonts.googleapis.com/css?family=Bowlby+One+SC|Fira+Sans+Extra+Condensed|Francois+One|Fredoka+One|Special+Elite&display=swap");
 
 .section {
-  background-image: url("/img/dark-blur-blurred-gradient-1526.jpg");
+  background: transparent;
+}
+
+html {
+  font-family: "Fira Sans Extra Condensed", sans-serif;
+  font-size: 1.2em;
+  background-image: url("../img/dark-blur-blurred-gradient-1526.jpg");
   background-repeat: no-repeat;
   background-image: cross-fade();
   background-attachment: fixed;
 }
-
-body {
-  font-family: "Fira Sans Extra Condensed", sans-serif;
-  font-size: 1.2em;
-}
 .title {
   font-family: "Special Elite", serif;
+}
+
+.modal-background {
+  background: transparent;
+}
+
+.modal-card {
+  box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.5), 0 18px 60px 0 rgba(0, 0, 0, 0.3);
 }
