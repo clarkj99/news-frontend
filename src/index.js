@@ -1,6 +1,7 @@
 baseURL = 'http://10.0.0.225:3000/articles/'
 categoriesURL = 'http://10.0.0.225:3000/categories/'
 window.addEventListener('DOMContentLoaded', function (e) {
+    const pageHeading = document.querySelector('#heading');
 
     AOS.init(); //Appear on Scroll
     addListeners();
@@ -29,7 +30,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
             .then(res => res.json())
             .then(article => {
                 if (!article.url_to_image)
-                    article.url_to_image = 'undefined.jpg';
+                    article.url_to_image = '/img/undefined.jpg';
                 updateModal(article);
             })
     }
@@ -57,6 +58,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         fetch(`${categoriesURL}${categoryId}`)
             .then(res => res.json())
             .then(category => {
+                pageHeading.innerText = category.name;
                 showArticles(category.articles);
             })
     }
@@ -72,7 +74,10 @@ window.addEventListener('DOMContentLoaded', function (e) {
     function fetchArticles() {
         fetch(baseURL)
             .then(res => res.json())
-            .then(showArticles)
+            .then(articles => {
+                pageHeading.innerText = "all articles";
+                showArticles(articles)
+            })
     }
 
     function showArticles(articles) {
@@ -98,11 +103,10 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const thumbHeight = 90;
 
         if (!article.url_to_image)
-            article.url_to_image = 'undefined.jpg';
+            article.url_to_image = '/img/undefined.jpg';
 
         const divCard = document.createElement('div');
         divCard.className = "card is-inline-flex";
-
         divCard.setAttribute("data-aos", "zoom-in")
         divCard.setAttribute("data-aos-mirror", "true")
         divCard.setAttribute("data-aos-offset", (thumbHeight * .5).toString())
@@ -142,7 +146,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
 
         modalImage.src = article.url_to_image;
-        modalDescription.innerText = article.description;
+        modalDescription.innerText = article.content ? article.content : article.description;
         modalSource.innerText = article.source_name;
         modalCategory.innerText = article.category.name;
         modalDate.innerText = article.published_at;

@@ -1,9 +1,6 @@
 var ctx;
 function initImage(event) {
     ctx = document.getElementById('canvas').getContext('2d');
-    // Your preview is actually 120x120,
-    // but I've stuck with the textual description of
-    // your requirements here.
     ctx.canvas.width = 150;
     ctx.canvas.height = 150;
     loadBackground('http://i.stack.imgur.com/PCKEo.png');
