@@ -1,3 +1,4 @@
+baseURL = 'http://localhost:3000/'
 articlesURL = 'http://localhost:3000/articles/'
 categoriesURL = 'http://localhost:3000/categories/'
 countriesURL = 'http://localhost:3000/countries/'
@@ -23,6 +24,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         anchorPlacement: 'top-bottom', // defines which position of the element regarding to window should trigger the animation
 
     }); //Appear on Scroll
+
     addListeners();
     fetchCategories();
     fetchCountries();
@@ -35,8 +37,9 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const modalBack = document.querySelector('.modal-background');
         const brand = document.querySelector('#brand');
         brand.addEventListener('click', function (e) {
-            fetchArticles()
             setCurrentCategory(0);
+            setCurrentCountry(0);
+            fetchArticles();
         });
 
         [modalClose, modalBack].forEach(function (element) {
@@ -74,22 +77,23 @@ window.addEventListener('DOMContentLoaded', function (e) {
     function fetchCategories() {
         fetch(categoriesURL)
             .then(res => res.json())
-            .then(showNavbar)
+            .then(showCategories)
     }
 
-    function showNavbar(categories) {
-        const navbarDiv = document.querySelector('#categories');
+    function showCategories(categories) {
+        const categoryElement = document.querySelector('#categories');
         for (const category of categories) {
-            navbarDiv.appendChild(makeCategoryButton(category));
+            categoryElement.appendChild(makeCategoryButton(category));
         }
 
-        navbarDiv.addEventListener('click', function (e) {
+        categoryElement.addEventListener('click', function (e) {
             if (e.target.className.includes('category-button')) {
-                fetchCategory(e.target.dataset.categoryId);
                 setCurrentCategory(e.target.dataset.categoryId);
+                fetchArticles();
             }
         })
     }
+
     function setCurrentCategory(id) {
         if (currentCategory) {
             let a = document.querySelector(`[data-category-id="${currentCategory}"]`);
@@ -102,13 +106,47 @@ window.addEventListener('DOMContentLoaded', function (e) {
         currentCategory = id;
 
     }
-    function fetchCategory(categoryId) {
+
+    function setCurrentCountry(id) {
+        if (currentCountry) {
+            let a = document.querySelector(`[data-country-id="${currentCountry}"]`);
+            a.classList.remove('is-active');
+        }
+        if (id) {
+            a = document.querySelector(`[data-country-id="${id}"]`);
+            a.classList.add('is-active');
+        }
+        currentCountry = id;
+    }
+
+    function fetchArticles() {
         startSpinner();
-        fetch(`${categoriesURL}${categoryId}`)
+        let url = baseURL;
+        let headingText = "";
+
+        switch (true) {
+            case (currentCountry > 0 && currentCategory > 0):
+                url += `countries/${currentCountry}/categories/${currentCategory}/articles/`;
+                headingText = document.querySelector(`[data-country-id="${currentCountry}"]`).innerText + " " + document.querySelector(`[data-category-id="${currentCategory}"]`).innerText;
+                break;
+            case (currentCountry > 0):
+                url += `countries/${currentCountry}/articles`;
+                headingText = document.querySelector(`[data-country-id="${currentCountry}"]`).innerText;
+                break;
+            case (currentCategory > 0):
+                url += `categories/${currentCategory}/articles`;
+                headingText = document.querySelector(`[data-category-id="${currentCategory}"]`).innerText;
+                break;
+            default:
+                url += 'articles/';
+                headingText = "all articles";
+        }
+
+        fetch(url)
             .then(res => res.json())
-            .then(category => {
-                pageHeading.innerText = `${category.name} :${category.articles.length}`;
-                showArticles(category.articles);
+            .then(articles => {
+                pageHeading.innerText = `${headingText} :${articles.length}`;
+                showArticles(articles);
                 stopSpinner();
             })
     }
@@ -131,27 +169,29 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function showCountries(countries) {
+        const countryElement = document.querySelector('#countries');
         for (const country of countries) {
-            const countryDiv = document.querySelector('#countries');
-            const div = document.createElement('div');
-            div.className = "level-item"
-            const a = document.createElement('a');
-            a.className = "button is-info";
-            a.innerText = country.name
-            div.appendChild(a)
-            countryDiv.appendChild(div)
-        }
-    }
 
-    function fetchArticles() {
-        startSpinner();
-        fetch(articlesURL)
-            .then(res => res.json())
-            .then(articles => {
-                pageHeading.innerText = `all articles: ${articles.length}`;
-                showArticles(articles);
-                stopSpinner();
-            })
+            countryElement.appendChild(makeCountryButton(country))
+        }
+
+        countryElement.addEventListener('click', function (e) {
+            if (e.target.className.includes('country-button')) {
+                setCurrentCountry(e.target.dataset.countryId);
+                fetchArticles();
+            }
+        })
+    }
+    function makeCountryButton(country) {
+        const div = document.createElement('div');
+        div.className = "level-item"
+        const a = document.createElement('a');
+        a.className = "button is-info country-button";
+        a.innerText = country.name
+        a.dataset.countryId = country.id
+
+        div.appendChild(a)
+        return div
     }
 
     function showArticles(articles) {
@@ -174,8 +214,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function makeACard(article) {
-
-
         if (!article.url_to_image)
             article.url_to_image = 'img/undefined.jpg';
 
@@ -216,13 +254,15 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const modalDescription = document.querySelector('#modal-description');
         const modalSource = document.querySelector('#modal-source');
         const modalCategory = document.querySelector('#modal-category');
+        const modalCountry = document.querySelector('#modal-country');
         const modalDate = document.querySelector('#modal-date');
 
         modalImage.src = article.url_to_image;
         modalDescription.innerText = article.content ? article.content : article.description;
         modalSource.innerText = article.source_name;
         modalCategory.innerText = article.category.name;
-        modalDate.innerText = article.published_at;
+        modalCountry.innerText = article.country.name;
+        // modalDate.innerText = article.published_at;
         modalTitle.innerText = article.title;
         modalTitle.href = article.url;
         document.documentElement.classList.add('is-clipped');
