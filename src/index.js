@@ -1,17 +1,22 @@
-baseURL = 'http://localhost:3000/articles/'
+articlesURL = 'http://localhost:3000/articles/'
 categoriesURL = 'http://localhost:3000/categories/'
+countriesURL = 'http://localhost:3000/countries/'
+
 window.addEventListener('DOMContentLoaded', function (e) {
     const pageHeading = document.querySelector('#heading');
     const animaStyle = {
-        in: 'zoomIn', out: 'zoomOut'
+        in: 'tada', out: 'fadeOut'
     }
+    const thumbWidth = 180;
+    const thumbHeight = 90;
+    let currentCategory = 0;
+    let currentCountry = 0;
 
     AOS.init({
-
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-        offset: 180, // offset (in px) from the original trigger point
+        offset: thumbHeight * 2, // offset (in px) from the original trigger point
         delay: 0, // values from 0 to 3000, with step 50ms
-        duration: 400, // values from 0 to 3000, with step 50ms
+        duration: 1000, // values from 0 to 3000, with step 50ms
         easing: 'ease', // default easing for AOS animations
         once: false, // whether animation should happen only once - while scrolling down
         mirror: true, // whether elements should animate out while scrolling past them
@@ -20,6 +25,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }); //Appear on Scroll
     addListeners();
     fetchCategories();
+    fetchCountries();
     fetchArticles();
 
     function addListeners() {
@@ -30,6 +36,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const brand = document.querySelector('#brand');
         brand.addEventListener('click', function (e) {
             fetchArticles()
+            setCurrentCategory(0);
         });
 
         [modalClose, modalBack].forEach(function (element) {
@@ -44,8 +51,18 @@ window.addEventListener('DOMContentLoaded', function (e) {
         })
     }
 
+    function startSpinner() {
+        const spinner = document.querySelector('#spinner');
+        spinner.classList.add('is-active')
+    }
+
+    function stopSpinner() {
+        const spinner = document.querySelector('#spinner');
+        spinner.classList.remove('is-active')
+    }
+
     function fetchArticle(articleId) {
-        fetch(`${baseURL}${articleId}`)
+        fetch(`${articlesURL}${articleId}`)
             .then(res => res.json())
             .then(article => {
                 if (!article.url_to_image)
@@ -68,34 +85,72 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
         navbarDiv.addEventListener('click', function (e) {
             if (e.target.className.includes('category-button')) {
-                fetchCategory(e.target.dataset.categoryId)
+                fetchCategory(e.target.dataset.categoryId);
+                setCurrentCategory(e.target.dataset.categoryId);
             }
         })
     }
+    function setCurrentCategory(id) {
+        if (currentCategory) {
+            let a = document.querySelector(`[data-category-id="${currentCategory}"]`);
+            a.classList.remove('is-active');
+        }
+        if (id) {
+            a = document.querySelector(`[data-category-id="${id}"]`);
+            a.classList.add('is-active');
+        }
+        currentCategory = id;
 
+    }
     function fetchCategory(categoryId) {
+        startSpinner();
         fetch(`${categoriesURL}${categoryId}`)
             .then(res => res.json())
             .then(category => {
-                pageHeading.innerText = category.name;
+                pageHeading.innerText = `${category.name} :${category.articles.length}`;
                 showArticles(category.articles);
+                stopSpinner();
             })
     }
 
     function makeCategoryButton(category) {
+        const div = document.createElement('div');
+        div.className = "level-item";
         const a = document.createElement('a');
-        a.className = "navbar-item category-button";
+        a.className = "button is-link category-button";
         a.innerText = category.name
         a.setAttribute("data-category-id", category.id)
-        return a
+        div.appendChild(a)
+        return div
+    }
+
+    function fetchCountries() {
+        fetch(countriesURL)
+            .then(res => res.json())
+            .then(showCountries)
+    }
+
+    function showCountries(countries) {
+        for (const country of countries) {
+            const countryDiv = document.querySelector('#countries');
+            const div = document.createElement('div');
+            div.className = "level-item"
+            const a = document.createElement('a');
+            a.className = "button is-info";
+            a.innerText = country.name
+            div.appendChild(a)
+            countryDiv.appendChild(div)
+        }
     }
 
     function fetchArticles() {
-        fetch(baseURL)
+        startSpinner();
+        fetch(articlesURL)
             .then(res => res.json())
             .then(articles => {
-                pageHeading.innerText = "all articles";
-                showArticles(articles)
+                pageHeading.innerText = `all articles: ${articles.length}`;
+                showArticles(articles);
+                stopSpinner();
             })
     }
 
@@ -115,11 +170,11 @@ window.addEventListener('DOMContentLoaded', function (e) {
                 fetchArticle(e.target.dataset.articleId)
             }
         })
+        window.scrollTo({ top: 00, behavior: 'auto' });
     }
 
     function makeACard(article) {
-        const thumbWidth = 160;
-        const thumbHeight = 90;
+
 
         if (!article.url_to_image)
             article.url_to_image = 'img/undefined.jpg';
@@ -140,7 +195,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const a = document.createElement('a');
         a.className = "modal-button";
 
-        img = document.createElement('img');
+        const img = document.createElement('img');
         img.setAttribute("data-article-id", article.id)
         img.className = "article-image"
         // img.style = ('object-fit:cover;width:256px;height: 256px;')
@@ -162,7 +217,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const modalSource = document.querySelector('#modal-source');
         const modalCategory = document.querySelector('#modal-category');
         const modalDate = document.querySelector('#modal-date');
-
 
         modalImage.src = article.url_to_image;
         modalDescription.innerText = article.content ? article.content : article.description;

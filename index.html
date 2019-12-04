@@ -14,7 +14,7 @@
     />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/bulmaswatch/slate/bulmaswatch.min.css"
+      href="https://unpkg.com/bulmaswatch/lux/bulmaswatch.min.css"
     />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="src/styles.css" />
@@ -35,10 +35,14 @@
           >camelCaseNewsNetwork</a
         >
       </div>
-      <div class="navbar-menu has-text-centered" id="categories"></div>
+      <div class="navbar-menu has-text-centered" id=""></div>
     </nav>
-
     <section class="section">
+      <div class="level has-text-centered" id="categories"></div>
+      <hr />
+      <div class="level has-text-centered" id="countries"></div>
+      <hr />
+
       <div class="content has-text-centered">
         <h1 id="heading"></h1>
       </div>
@@ -55,7 +59,7 @@
       <!-- *** Modal *** -->
       <div id="modal" class="modal">
         <div class="modal-background"></div>
-        <div class="modal-card" data-aoss="fade-up" data-aos-mirror="true">
+        <div class="modal-card faster">
           <header class="modal-card-head">
             <p style="flex-shrink:unset" class="modal-card-title">
               <a id="modal-title" target="_blank"> Modal title </a>
@@ -75,6 +79,15 @@
               <span id="modal-date"></span>
             </p>
           </section>
+        </div>
+      </div>
+
+      <!-- *** Spinner Modal *** -->
+      <div id="spinner" class="modal">
+        <div class="modal-content">
+          <p class="image">
+            <img src="img/giphy1.gif" alt="" />
+          </p>
         </div>
       </div>
     </section>
