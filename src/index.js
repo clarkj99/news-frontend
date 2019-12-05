@@ -33,8 +33,13 @@ window.addEventListener('DOMContentLoaded', function (e) {
     function addListeners() {
 
         const modal = document.querySelector('#modal');
+        const loginModal = document.querySelector('#login-modal');
+        const loginForm = document.querySelector('#login-form');
+        const loginButton = document.querySelector('#login-button');
         const modalClose = document.querySelector('#modal-close');
-        const modalBack = document.querySelector('.modal-background');
+        const loginClose = document.querySelector('#login-close');
+        const modalBack = document.querySelector('#modal-background');
+        const loginBack = document.querySelector('#login-background');
         const brand = document.querySelector('#brand');
         brand.addEventListener('click', function (e) {
             setCurrentCategory(0);
@@ -44,14 +49,69 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
         [modalClose, modalBack].forEach(function (element) {
             element.addEventListener('click', function (e) {
-                animateCSS('.modal-card', animaStyle['out'], () => {
+                animateCSS('#article-card', animaStyle['out'], () => {
                     const modal = document.querySelector('#modal');
                     document.documentElement.classList.remove('is-clipped');
                     modal.classList.remove('is-active');
                 });
 
             });
+        });
+
+        [loginClose, loginBack].forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                animateCSS('#login-card', animaStyle['out'], () => {
+                    const modal = document.querySelector('#loginModal');
+                    document.documentElement.classList.remove('is-clipped');
+                    modal.classList.remove('is-active');
+                });
+
+            });
+        });
+
+        loginButton.addEventListener('click', showLoginModal);
+
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            console.log(e.target.username.value);
+            createOrLogin(e)
+        });
+
+    }
+
+    function createOrLogin(event) {
+        fetch(`${baseURL}users/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user: { username: event.target.username.value }
+            })
         })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (!data.status) {
+                    clearError(event);
+                } else {
+                    reportError(event, data);
+                }
+            })
+    }
+    function reportError(e, data) {
+        console.error(data.status, data.message);
+        const errorSpan = document.querySelector('#error-message');
+        errorSpan.innerText = data.message;
+        e.target.username.classList.add('is-danger');
+        e.target.reset();
+    }
+
+    function clearError(e) {
+        const errorSpan = document.querySelector('#error-message');
+        errorSpan.innerText = "";
+        e.target.username.classList.remove('is-danger');
+        e.target.reset();
     }
 
     function startSpinner() {
@@ -152,14 +212,14 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function makeCategoryButton(category) {
-        const div = document.createElement('div');
-        div.className = "level-item";
+        // const div = document.createElement('div');
+        // div.className = "navbar-item";
         const a = document.createElement('a');
-        a.className = "button is-link category-button";
+        a.className = "navbar-item button category-button";
         a.innerText = category.name
         a.setAttribute("data-category-id", category.id)
-        div.appendChild(a)
-        return div
+        // div.appendChild(a)
+        return a
     }
 
     function fetchCountries() {
@@ -182,16 +242,17 @@ window.addEventListener('DOMContentLoaded', function (e) {
             }
         })
     }
+
     function makeCountryButton(country) {
-        const div = document.createElement('div');
-        div.className = "level-item"
+        // const div = document.createElement('div');
+        // div.className = "level-item"
         const a = document.createElement('a');
-        a.className = "button is-info country-button";
+        a.className = "navbar-item country-button";
         a.innerText = country.name
         a.dataset.countryId = country.id
 
-        div.appendChild(a)
-        return div
+        // div.appendChild(a)
+        return a
     }
 
     function showArticles(articles) {
@@ -220,8 +281,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const divCard = document.createElement('div');
         divCard.className = "card is-inline-flex";
         divCard.setAttribute("data-aos", "zoom-in-up")
-        // divCard.setAttribute("data-aos-mirror", "true")
-        // divCard.setAttribute("data-aos-offset", (thumbHeight * .5).toString())
 
         const divImage = document.createElement('div');
         divImage.className = "card-image";
@@ -236,7 +295,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const img = document.createElement('img');
         img.setAttribute("data-article-id", article.id)
         img.className = "article-image"
-        // img.style = ('object-fit:cover;width:256px;height: 256px;')
         img.setAttribute("style", `object-fit: cover; width: ${thumbWidth}px; height: ${thumbHeight}px; `)
         img.src = article.url_to_image;
         a.appendChild(img);
@@ -246,6 +304,11 @@ window.addEventListener('DOMContentLoaded', function (e) {
         divCard.appendChild(divImage);
 
         return divCard;
+    }
+
+    function showLoginModal() {
+        loginModal.classList.add('is-active');
+        animateCSS('#login-card', animaStyle['in'])
     }
 
     function updateModal(article) {
@@ -262,12 +325,12 @@ window.addEventListener('DOMContentLoaded', function (e) {
         modalSource.innerText = article.source_name;
         modalCategory.innerText = article.category.name;
         modalCountry.innerText = article.country.name;
-        // modalDate.innerText = article.published_at;
+        modalDate.innerText = article.published_at;
         modalTitle.innerText = article.title;
         modalTitle.href = article.url;
         document.documentElement.classList.add('is-clipped');
         modal.classList.add('is-active');
-        animateCSS('.modal-card', animaStyle['in']);
+        animateCSS('#article-card', animaStyle['in']);
     }
 
     function animateCSS(element, animationName, callback) {

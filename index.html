@@ -14,7 +14,7 @@
     />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/bulmaswatch/litera/bulmaswatch.min.css"
+      href="https://unpkg.com/bulmaswatch/cyborg/bulmaswatch.min.css"
     />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="src/styles.css" />
@@ -29,26 +29,50 @@
   <body class="has-navbar-fixed-top">
     <!-- *** Nav *** -->
 
-    <nav class="navbar has-text-centered is-fixed-top">
+    <nav class="navbar is-fixed-top" role="navigation">
       <div class="navbar-brand">
-        <a id="brand" class="navbar-item title has-text-blue"
-          >camelCaseNewsNetwork</a
+        <a id="brand" class="navbar-item"
+          ><span class="title">camelCaseNewsNetwork</span></a
         >
+        <a
+          role="button"
+          class="navbar-burger burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
-      <div class="navbar-menu has-text-centered" id=""></div>
+      <div class="navbar-menu">
+        <div class="navbar-start">
+          <div class="navbar-item">
+            <div class="buttons" id="categories"></div>
+          </div>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Countries</a>
+            <div class="navbar-dropdown" id="countries"></div>
+          </div>
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <a id="login-button" class="button is-primary">
+                Log in
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </nav>
+
     <section class="section">
-      <div class="level has-text-centered" id="categories"></div>
-      <hr />
-      <div class="level has-text-centered" id="countries"></div>
-      <hr />
-
       <div class="content has-text-centered">
-        <h1 id="heading"></h1>
+        <h1 id="heading" class="title is-h2"></h1>
       </div>
-    </section>
 
-    <section class="section is-marginless is-paddingless">
       <div class="container" id="main">
         <!-- *** Images *** -->
         <div
@@ -56,10 +80,10 @@
           id="images"
         ></div>
       </div>
-      <!-- *** Modal *** -->
+      <!-- *** Article Modal *** -->
       <div id="modal" class="modal">
-        <div class="modal-background"></div>
-        <div class="modal-card faster">
+        <div id="modal-background" class="modal-background"></div>
+        <div id="article-card" class="modal-card faster">
           <header class="modal-card-head">
             <p style="flex-shrink:unset" class="modal-card-title">
               <a id="modal-title" target="_blank"> Modal title </a>
@@ -90,6 +114,43 @@
           <p class="image">
             <img src="img/giphy1.gif" alt="" />
           </p>
+        </div>
+      </div>
+
+      <!-- *** Login Modal *** -->
+      <div id="loginModal" class="modal">
+        <div id="login-background" class="modal-background"></div>
+        <div id="login-card" class="modal-card faster">
+          <header class="modal-card-head">
+            <p class="modal-card-title">
+              Sign Up / Login
+            </p>
+            <button id="login-close" class="delete" aria-label="close"></button>
+          </header>
+
+          <section class="modal-card-body">
+            <form id="login-form">
+              <div class="field">
+                <label class="label">Username</label>
+                <div class="control">
+                  <input
+                    id="username"
+                    class="input"
+                    type="text"
+                    placeholder="Username"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <button id="submit" type="submit" class="button is-primary">
+                    Login
+                  </button>
+                  <span class="has-text-error" id="error-message"></span>
+                </div>
+              </div>
+            </form>
+          </section>
         </div>
       </div>
     </section>
