@@ -14,7 +14,7 @@
     />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/bulmaswatch/cyborg/bulmaswatch.min.css"
+      href="https://unpkg.com/bulmaswatch/litera/bulmaswatch.min.css"
     />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="src/styles.css" />
@@ -96,7 +96,9 @@
               id="modal-image"
               style="width:100%;height:338px;object-fit:cover;"
             />
-
+            <button class="button" id="like-button">
+              <span class="icon"> <i class="fas fa-heart"></i></span>
+            </button>
             <p id="modal-description"></p>
             <p>
               <span class="tag" id="modal-country"></span>
@@ -118,7 +120,7 @@
       </div>
 
       <!-- *** Login Modal *** -->
-      <div id="loginModal" class="modal">
+      <div id="login-modal" class="modal">
         <div id="login-background" class="modal-background"></div>
         <div id="login-card" class="modal-card faster">
           <header class="modal-card-head">
@@ -140,13 +142,13 @@
                     placeholder="Username"
                   />
                 </div>
+                <p class="help" id="error-message"></p>
               </div>
               <div class="field">
                 <div class="control">
                   <button id="submit" type="submit" class="button is-primary">
                     Login
                   </button>
-                  <span class="has-text-error" id="error-message"></span>
                 </div>
               </div>
             </form>

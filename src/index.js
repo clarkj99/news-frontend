@@ -5,6 +5,7 @@ countriesURL = 'http://localhost:3000/countries/'
 
 window.addEventListener('DOMContentLoaded', function (e) {
     const pageHeading = document.querySelector('#heading');
+    const loginButton = document.querySelector('#login-button');
     const animaStyle = {
         in: 'tada', out: 'fadeOut'
     }
@@ -12,6 +13,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
     const thumbHeight = 90;
     let currentCategory = 0;
     let currentCountry = 0;
+    let currentUser;
 
     AOS.init({
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
@@ -35,7 +37,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const modal = document.querySelector('#modal');
         const loginModal = document.querySelector('#login-modal');
         const loginForm = document.querySelector('#login-form');
-        const loginButton = document.querySelector('#login-button');
         const modalClose = document.querySelector('#modal-close');
         const loginClose = document.querySelector('#login-close');
         const modalBack = document.querySelector('#modal-background');
@@ -60,11 +61,12 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
         [loginClose, loginBack].forEach(function (element) {
             element.addEventListener('click', function (e) {
-                animateCSS('#login-card', animaStyle['out'], () => {
-                    const modal = document.querySelector('#loginModal');
-                    document.documentElement.classList.remove('is-clipped');
-                    modal.classList.remove('is-active');
-                });
+                // animateCSS('#login-card', animaStyle['out'], () => {
+                //     const modal = document.querySelector('#loginModal');
+                //     document.documentElement.classList.remove('is-clipped');
+                //     modal.classList.remove('is-active');
+                // });
+                hideModal('#login-card', '#login-modal')
 
             });
         });
@@ -73,10 +75,17 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            console.log(e.target.username.value);
             createOrLogin(e)
         });
 
+    }
+
+    function hideModal(animatedSelector, modalSelector) {
+        const modal = document.querySelector(modalSelector);
+        animateCSS(animatedSelector, animaStyle['out'], () => {
+            document.documentElement.classList.remove('is-clipped');
+            modal.classList.remove('is-active');
+        });
     }
 
     function createOrLogin(event) {
@@ -91,14 +100,21 @@ window.addEventListener('DOMContentLoaded', function (e) {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 if (!data.status) {
+                    currentUser = data;
                     clearError(event);
+                    hideModal('#login-card', '#login-modal')
+                    updateLogin();
                 } else {
                     reportError(event, data);
                 }
             })
     }
+
+    function updateLogin() {
+        loginButton.innerText = `Welcome, ${currentUser.username}!`
+    }
+
     function reportError(e, data) {
         console.error(data.status, data.message);
         const errorSpan = document.querySelector('#error-message');
@@ -307,6 +323,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function showLoginModal() {
+        const loginModal = document.querySelector('#login-modal');
         loginModal.classList.add('is-active');
         animateCSS('#login-card', animaStyle['in'])
     }
