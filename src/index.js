@@ -81,16 +81,61 @@ window.addEventListener('DOMContentLoaded', function (e) {
         });
 
         likeButton.addEventListener('click', function (e) {
-            toggleLike(e)
+            if (currentUser) {
+                const isLiked = toggleLike(e);
+                if (isLiked) {
+                    console.log('create');
+                    createFavorite(e);
+                } else {
+                    removeFavorite(e);
+                }
+            } else {
+                console.log('Login, fool!');
+            }
         });
 
     }
 
     function toggleLike(event) {
-        const icon = document.querySelector('#like-button');
-        // post or delete like
-        //switch icon
-        icon.classList.toggle('has-background-danger')
+        const button = document.querySelector('#like-button');
+        const isLiked = button.classList.toggle('has-background-danger');
+        return isLiked;
+    }
+
+    function isFavorite() {
+        const button = document.querySelector('#like-button');
+        const isLiked = button.classList.contains('has-background-danger');
+        return isLiked;
+    }
+
+    function createFavorite(event) {
+        const likeButton = document.querySelector('#like-button');
+        fetch(`${baseURL}users/${currentUser.id}/favorites`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                favorite: { user_id: currentUser.id, article_id: parseInt(likeButton.dataset.articleId) }
+            })
+        })
+            .then(res => res.json())
+            .then(favorite => {
+                likeButton.dataset.favoriteId = favorite.id
+            })
+    }
+
+    function removeFavorite(event) {
+        const likeButton = document.querySelector('#like-button');
+        console.log('favorite', likeButton.dataset.favoriteId);
+        fetch(`${baseURL}users/${currentUser.id}/favorites/${likeButton.dataset.favoriteId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(console.log)
     }
 
     function hideModal(animatedSelector, modalSelector) {
@@ -349,9 +394,20 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const modalCategory = document.querySelector('#modal-category');
         const modalCountry = document.querySelector('#modal-country');
         const modalDate = document.querySelector('#modal-date');
+        const likeButton = document.querySelector('#like-button');
 
         modalImage.src = article.url_to_image;
         modalDescription.innerText = article.content ? article.content : article.description;
+        likeButton.dataset.articleId = article.id;
+
+        if (currentUser) {
+            isAFav(article.id);
+        }
+        else {
+            if (isFavorite())
+                toggleLike();
+        }
+
         modalSource.innerText = article.source_name;
         modalCategory.innerText = article.category.name;
         modalCountry.innerText = article.country.name;
@@ -361,6 +417,31 @@ window.addEventListener('DOMContentLoaded', function (e) {
         document.documentElement.classList.add('is-clipped');
         modal.classList.add('is-active');
         animateCSS('#article-card', animaStyle['in']);
+    }
+
+    function isAFav(articleId) {
+        const likeButton = document.querySelector('#like-button');
+        fetch(`${baseURL}users/${currentUser.id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(user => {
+                const favs = user.favorites;
+                const fav = favs.find(f => {
+                    return (f.article_id == articleId)
+                });
+                if (fav) {
+                    likeButton.dataset.articleId = fav.id;
+                    if (!isFavorite())
+                        toggleLike();
+                } else {
+                    if (isFavorite())
+                        toggleLike()
+                }
+            })
     }
 
     function animateCSS(element, animationName, callback) {
