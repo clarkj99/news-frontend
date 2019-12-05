@@ -42,6 +42,8 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const modalBack = document.querySelector('#modal-background');
         const loginBack = document.querySelector('#login-background');
         const brand = document.querySelector('#brand');
+        const likeButton = document.querySelector('#like-button');
+
         brand.addEventListener('click', function (e) {
             setCurrentCategory(0);
             setCurrentCountry(0);
@@ -78,6 +80,17 @@ window.addEventListener('DOMContentLoaded', function (e) {
             createOrLogin(e)
         });
 
+        likeButton.addEventListener('click', function (e) {
+            toggleLike(e)
+        });
+
+    }
+
+    function toggleLike(event) {
+        const icon = document.querySelector('#like-button');
+        // post or delete like
+        //switch icon
+        icon.classList.toggle('has-background-danger')
     }
 
     function hideModal(animatedSelector, modalSelector) {
