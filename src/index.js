@@ -7,9 +7,9 @@ window.addEventListener('DOMContentLoaded', function (e) {
     const pageHeading = document.querySelector('#heading');
     const loginButton = document.querySelector('#login-button');
     const animaStyle = {
-        in: 'tada', out: 'fadeOut'
+        in: 'fadeInUp', out: 'fadeOut'
     }
-    const thumbWidth = 180;
+    const thumbWidth = 160;
     const thumbHeight = 90;
     let currentCategory = 0;
     let currentCountry = 0;
@@ -88,7 +88,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
                 } else {
                     removeFavorite(e);
                 }
-                showFavorites();
+
             } else {
                 console.log('Login, fool!');
             }
@@ -122,6 +122,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
             .then(res => res.json())
             .then(favorite => {
                 likeButton.dataset.articleId = favorite.id
+                showFavorites();
             })
     }
 
@@ -135,7 +136,10 @@ window.addEventListener('DOMContentLoaded', function (e) {
             }
         })
             .then(res => res.json())
-            .then(console.log)
+            .then(res => {
+                console.log(res);
+                showFavorites();
+            })
     }
 
     function hideModal(animatedSelector, modalSelector) {
@@ -363,7 +367,10 @@ window.addEventListener('DOMContentLoaded', function (e) {
                 .then(user => {
                     const photosDiv = document.querySelector('#favorite-images');
                     console.log(photosDiv);
-                    photosDiv.parentNode.classList.remove('is-hidden');
+                    if (user.articles.length > 0)
+                        photosDiv.parentNode.classList.remove('is-hidden');
+                    else
+                        photosDiv.parentNode.classList.add('is-hidden');
                     // const div = document.querySelector('#images');
                     const div = document.createElement('div');
                     div.className = "has-text-centered";
