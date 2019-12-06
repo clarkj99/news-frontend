@@ -80,7 +80,11 @@ window.addEventListener('DOMContentLoaded', function (e) {
             createOrLogin(e)
         });
 
+
         likeButton.addEventListener('click', function (e) {
+
+            /// change this to be pessimistic
+
             if (currentUser) {
                 const isLiked = toggleLike(e);
                 if (isLiked) {
@@ -121,7 +125,8 @@ window.addEventListener('DOMContentLoaded', function (e) {
         })
             .then(res => res.json())
             .then(favorite => {
-                likeButton.dataset.articleId = favorite.id
+                console.log(favorite.article_id);
+                likeButton.dataset.articleId = favorite.article_id
                 showFavorites();
             })
     }
@@ -297,7 +302,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const a = document.createElement('a');
         a.className = "navbar-item button category-button";
         a.innerText = category.name
-        a.setAttribute("data-category-id", category.id)
+        a.dataset.categoryId = category.id;
         // div.appendChild(a)
         return a
     }
@@ -395,7 +400,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
         const divCard = document.createElement('div');
         divCard.className = "card is-inline-flex";
-        divCard.setAttribute("data-aos", "zoom-in-up")
+        divCard.dataset.aos = "zoom-in-up";
 
         const divImage = document.createElement('div');
         divImage.className = "card-image";
@@ -408,7 +413,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         a.className = "modal-button";
 
         const img = document.createElement('img');
-        img.setAttribute("data-article-id", article.id)
+        img.dataset.articleId = article.id;
         img.className = "article-image"
         img.setAttribute("style", `object-fit: cover; width: ${thumbWidth}px; height: ${thumbHeight}px; `)
         img.src = article.url_to_image;
