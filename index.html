@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css"
@@ -69,17 +70,26 @@
     </nav>
 
     <section class="section">
-      <div class="content has-text-centered">
-        <h1 id="heading" class="title is-h2"></h1>
-      </div>
-
       <div class="container" id="main">
         <!-- *** Images *** -->
-        <div
-          class="is-marginless is-paddingless has-text-centered"
-          id="images"
-        ></div>
+        <div class="columns">
+          <div class="column is-three-quarters is-paddingless is-marginless">
+            <div class="content has-text-centered">
+              <h1 id="heading" class="title is-h2"></h1>
+            </div>
+            <div class="has-text-centered" id="images"></div>
+          </div>
+          <div
+            class="column is-one-quarter is-hidden is-paddingless is-marginless"
+          >
+            <div class="content has-text-centered">
+              <h1 id="fav-heading" class="title is-h2">Favorites</h1>
+            </div>
+            <div class="has-text-centered" id="favorite-images"></div>
+          </div>
+        </div>
       </div>
+
       <!-- *** Article Modal *** -->
       <div id="modal" class="modal">
         <div id="modal-background" class="modal-background"></div>

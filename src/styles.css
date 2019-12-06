@@ -1,11 +1,13 @@
-@import url("https://fonts.googleapis.com/css?family=Bowlby+One+SC|Fira+Sans+Extra+Condensed|Francois+One|Fredoka+One|Special+Elite&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Tienne|Viga&display=swap");
 
 /* .section {
   background: transparent;
 } */
 
-html {
-  font-family: "Fira Sans Extra Condensed", sans-serif;
+html,
+body {
+  font-family: "Viga", sans-serif;
+  font-weight: normal;
   /* background-image: url("../img/dark-blur-blurred-gradient-1526.jpg");
   background-repeat: no-repeat;
   background-image: cross-fade();
@@ -13,7 +15,8 @@ html {
   overflow-x: hidden;
 }
 .title {
-  font-family: "Special Elite", serif;
+  font-family: "Tienne", serif;
+  font-weight: normal;
 }
 
 .modal-background {

@@ -84,11 +84,11 @@ window.addEventListener('DOMContentLoaded', function (e) {
             if (currentUser) {
                 const isLiked = toggleLike(e);
                 if (isLiked) {
-                    console.log('create');
                     createFavorite(e);
                 } else {
                     removeFavorite(e);
                 }
+                showFavorites();
             } else {
                 console.log('Login, fool!');
             }
@@ -121,7 +121,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         })
             .then(res => res.json())
             .then(favorite => {
-                likeButton.dataset.favoriteId = favorite.id
+                likeButton.dataset.articleId = favorite.id
             })
     }
 
@@ -163,6 +163,8 @@ window.addEventListener('DOMContentLoaded', function (e) {
                     clearError(event);
                     hideModal('#login-card', '#login-modal')
                     updateLogin();
+                    fetchArticles();
+                    showFavorites();
                 } else {
                     reportError(event, data);
                 }
@@ -348,6 +350,38 @@ window.addEventListener('DOMContentLoaded', function (e) {
         window.scrollTo({ top: 00, behavior: 'auto' });
     }
 
+    function showFavorites() {
+        if (currentUser) {
+
+            fetch(`${baseURL}users/${currentUser.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(user => {
+                    const photosDiv = document.querySelector('#favorite-images');
+                    console.log(photosDiv);
+                    photosDiv.parentNode.classList.remove('is-hidden');
+                    // const div = document.querySelector('#images');
+                    const div = document.createElement('div');
+                    div.className = "has-text-centered";
+                    div.id = "favorite-images";
+                    photosDiv.parentNode.replaceChild(div, photosDiv);
+
+                    for (const article of user.articles) {
+                        div.appendChild(makeACard(article));
+                    }
+                    div.addEventListener('click', function (e) {
+                        if (e.target.className == 'article-image') {
+                            fetchArticle(e.target.dataset.articleId)
+                        }
+                    })
+                })
+        }
+    }
+
     function makeACard(article) {
         if (!article.url_to_image)
             article.url_to_image = 'img/undefined.jpg';
@@ -399,7 +433,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         modalImage.src = article.url_to_image;
         modalDescription.innerText = article.content ? article.content : article.description;
         likeButton.dataset.articleId = article.id;
-
+        console.log('currentUser', currentUser);
         if (currentUser) {
             isAFav(article.id);
         }
@@ -420,7 +454,6 @@ window.addEventListener('DOMContentLoaded', function (e) {
     }
 
     function isAFav(articleId) {
-        const likeButton = document.querySelector('#like-button');
         fetch(`${baseURL}users/${currentUser.id}`, {
             method: 'GET',
             headers: {
@@ -429,12 +462,15 @@ window.addEventListener('DOMContentLoaded', function (e) {
         })
             .then(res => res.json())
             .then(user => {
+                currentUser = user;
                 const favs = user.favorites;
                 const fav = favs.find(f => {
                     return (f.article_id == articleId)
                 });
                 if (fav) {
-                    likeButton.dataset.articleId = fav.id;
+                    const likeButton = document.querySelector('#like-button');
+                    likeButton.dataset.favoriteId = fav.id;
+                    console.log(likeButton);
                     if (!isFavorite())
                         toggleLike();
                 } else {
@@ -444,6 +480,15 @@ window.addEventListener('DOMContentLoaded', function (e) {
             })
     }
 
+    let loadUser = () => {
+        fetch(`${baseURL}users/${currentUser.id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+    }
     function animateCSS(element, animationName, callback) {
         const node = document.querySelector(element)
         node.classList.add('animated', animationName)
