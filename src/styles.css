@@ -1,17 +1,18 @@
 @import url("https://fonts.googleapis.com/css?family=Tienne|Viga&display=swap");
 
-/* .section {
+.section {
   background: transparent;
-} */
+}
 
 html,
 body {
   font-family: "Viga", sans-serif;
   font-weight: normal;
-  /* background-image: url("../img/dark-blur-blurred-gradient-1526.jpg");
+  background-image: url("../img/stars.gif");
   background-repeat: no-repeat;
   background-image: cross-fade();
-  background-attachment: fixed; */
+  background-size: cover;
+  background-attachment: fixed;
   overflow-x: hidden;
 }
 .title {

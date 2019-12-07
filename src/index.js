@@ -17,9 +17,9 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
     AOS.init({
         // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-        offset: thumbHeight * 2, // offset (in px) from the original trigger point
-        delay: 0, // values from 0 to 3000, with step 50ms
-        duration: 1000, // values from 0 to 3000, with step 50ms
+        offset: thumbHeight * 2.5, // offset (in px) from the original trigger point
+        delay: 100, // values from 0 to 3000, with step 50ms
+        duration: 500, // values from 0 to 3000, with step 50ms
         easing: 'ease', // default easing for AOS animations
         once: false, // whether animation should happen only once - while scrolling down
         mirror: true, // whether elements should animate out while scrolling past them
@@ -95,6 +95,8 @@ window.addEventListener('DOMContentLoaded', function (e) {
 
             } else {
                 console.log('Login, fool!');
+                // const errorSpan = document.querySelector('#error-message2');
+                // errorSpan.innerText = "Login before doing this";
             }
         });
 
@@ -349,7 +351,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         photosDiv.parentNode.replaceChild(div, photosDiv);
 
         for (const article of articles) {
-            div.appendChild(makeACard(article));
+            div.appendChild(makeACard(article, thumbWidth, thumbHeight));
         }
         div.addEventListener('click', function (e) {
             if (e.target.className == 'article-image') {
@@ -383,7 +385,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
                     photosDiv.parentNode.replaceChild(div, photosDiv);
 
                     for (const article of user.articles) {
-                        div.appendChild(makeACard(article));
+                        div.appendChild(makeACard(article, thumbWidth / 2, thumbHeight / 2));
                     }
                     div.addEventListener('click', function (e) {
                         if (e.target.className == 'article-image') {
@@ -394,7 +396,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         }
     }
 
-    function makeACard(article) {
+    function makeACard(article, width, height) {
         if (!article.url_to_image)
             article.url_to_image = 'img/undefined.jpg';
 
@@ -415,7 +417,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const img = document.createElement('img');
         img.dataset.articleId = article.id;
         img.className = "article-image"
-        img.setAttribute("style", `object-fit: cover; width: ${thumbWidth}px; height: ${thumbHeight}px; `)
+        img.setAttribute("style", `object-fit: cover; width: ${width}px; height: ${height}px; `)
         img.src = article.url_to_image;
         a.appendChild(img);
 
@@ -455,8 +457,8 @@ window.addEventListener('DOMContentLoaded', function (e) {
         }
 
         modalSource.innerText = article.source_name;
-        modalCategory.innerText = article.category.name;
-        modalCountry.innerText = article.country.name;
+        // modalCategory.innerText = article.category.name;
+        // modalCountry.innerText = article.country.name;
         modalDate.innerText = article.published_at;
         modalTitle.innerText = article.title;
         modalTitle.href = article.url;
