@@ -2,9 +2,11 @@
 
 ![camelCaseNewsNetwork](./img/ScreenShot.png)
 
+The camelCaseNewsNetwork is an image based news browser created with vanilla Javascript and Ruby on Rails.
+
 ## API
 
-This project consumes data supplied by the newsapi.org API. It uses the free version of the API, which limigts the number of daily requests asnd the number of records returned fro a request.
+This project consumes data supplied by the newsapi.org API. It uses the free version of the API, which limits the number of daily requests asnd the number of records returned fro a request.
 
 Request are made through the accompanying Ruby on Rails backend.
 
@@ -17,7 +19,6 @@ Request are made through the accompanying Ruby on Rails backend.
 ## Technology Used
 
 - Javascript / HTML / CSS
-- CSS
 - Bulma
 
 ## License
